@@ -5,6 +5,7 @@ public class GameController : MonoBehaviour
     public PositionReplayer positionReplayer; // 重放位置的组件
     public Transform startPoint; // 起点位置
     public ColorChanger cubeColorChanger; // 用来引用 ColorChanger 脚本
+    public GameObject targetObject;
 
     private bool isFirstLife = true; // 判断是否为第一条命
    
@@ -20,6 +21,7 @@ public class GameController : MonoBehaviour
         {
             cubeColorChanger.ChangeColor(Color.red); // 第一条命是红色
         }
+        targetObject.SetActive(false);  // 禁用物体，使其完全不可见且停用
     }
 
     void Update()
@@ -30,6 +32,7 @@ public class GameController : MonoBehaviour
             if (isFirstLife)
             {
                 // 进入第二条命：回到起点，停止记录，进入播放模式
+                targetObject.SetActive(true);  // 禁用物体，使其完全不可见且停用
                 isFirstLife = false;
                 transform.position = startPoint != null ? startPoint.position : Vector3.zero;
                 positionRecorder.isRecording = false; // 停止记录
@@ -51,7 +54,7 @@ public class GameController : MonoBehaviour
                 {
                     cubeColorChanger.ChangeColor(Color.red); // 第一条命是红色
                 }
-
+                targetObject.SetActive(false);  // 禁用物体，使其完全不可见且停用
             }
         }
 
