@@ -5,7 +5,7 @@ public class GameController : MonoBehaviour
     public PositionReplayer positionReplayer; // 重放位置的组件
     public Transform startPoint; // 起点位置
     public ColorChanger cubeColorChanger; // 用来引用 ColorChanger 脚本
-
+    public LineDraw lineDraw;
     public GameObject shadowObject;
     public GameObject playerObject;
     private bool RecordingMode = true; // 判断是否为第一条命
@@ -41,6 +41,8 @@ public class GameController : MonoBehaviour
                 playerObject.transform.position = startPoint != null ? startPoint.position : Vector3.zero;
                 positionRecorder.isRecording = false; // 停止记录
                 positionReplayer.StartReplay(); // 启动播放
+                lineDraw.isReplayMode = true;
+                lineDraw.isShadow = true;
                 if (cubeColorChanger != null)
                 {
                     cubeColorChanger.ChangeColor(Color.blue); // 第一条命是红色
@@ -54,6 +56,7 @@ public class GameController : MonoBehaviour
                 positionRecorder.recordedActions = new PlayerAction[10000]; // 清空记录
                 playerObject.transform.position = startPoint != null ? startPoint.position : Vector3.zero;
                 positionRecorder.StartRecording();// 启动记录模式
+                lineDraw.isReplayMode = false;
                 if (cubeColorChanger != null)
                 {
                     cubeColorChanger.ChangeColor(Color.red); // 第一条命是红色
@@ -68,7 +71,8 @@ public class GameController : MonoBehaviour
             {
                 if (SwapPositionsIfNotBlocked(playerObject, shadowObject))
                 {
-                    positionReplayer.turnShadow();
+                    positionReplayer.turnShadow(); 
+                    lineDraw.isShadow = !lineDraw.isShadow;
                 }
             }
         }
