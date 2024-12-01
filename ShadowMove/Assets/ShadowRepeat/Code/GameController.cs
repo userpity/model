@@ -9,7 +9,9 @@ public class GameController : MonoBehaviour
     public GameObject shadowObject;
     public GameObject playerObject;
     private bool RecordingMode = true; // 判断是否为第一条命
-   
+    public float checkRadius = 0.5f; // 检测范围，控制检测是否能穿越障碍物
+
+
 
 
     void Start()
@@ -33,6 +35,7 @@ public class GameController : MonoBehaviour
             if (RecordingMode)
             {
                 // 进入第二条命：回到起点，停止记录，进入播放模式
+                positionReplayer.turnShadow(true);
                 shadowObject.SetActive(true);  // 禁用物体，使其完全不可见且停用
                 RecordingMode = false;
                 playerObject.transform.position = startPoint != null ? startPoint.position : Vector3.zero;
@@ -63,20 +66,51 @@ public class GameController : MonoBehaviour
         {
             if (RecordingMode == false) 
             {
-                SwapPositions(shadowObject, playerObject);
+                if (SwapPositionsIfNotBlocked(playerObject, shadowObject))
+                {
+                    positionReplayer.turnShadow();
+                }
             }
         }
     }
 
-    void SwapPositions(GameObject obj1, GameObject obj2)
+
+    // 检测目标位置是否被障碍物阻挡
+    bool IsPositionBlocked(Vector3 targetPosition)
     {
-        // 临时存储 obj1 的位置
-        Vector3 tempPosition = obj1.transform.position;
+        // 使用 OverlapSphere 来检测目标位置周围的所有碰撞体
+        Collider[] colliders = Physics.OverlapSphere(targetPosition, checkRadius);
 
-        // 将 obj1 的位置赋给 obj2
-        obj1.transform.position = obj2.transform.position;
+        // 如果碰到有启用的碰撞体
+        foreach (Collider collider in colliders)
+        {
+            if (collider != null && collider.enabled)  // 检查碰撞体是否启用
+            {
+                return true;  // 目标位置被阻挡
+            }
+        }
 
-        // 将 obj2 的位置赋给 obj1
-        obj2.transform.position = tempPosition;
+        return false;  // 没有障碍物阻挡
+    }
+
+    // 检查是否能交换位置，如果可以则交换
+    bool SwapPositionsIfNotBlocked(GameObject obj1, GameObject obj2)
+    {
+        Vector3 target1Position = obj1.transform.position;
+        Vector3 target2Position = obj2.transform.position;
+
+        // 检查影子目标位置是否被阻挡
+        if (!IsPositionBlocked(target2Position))
+        {
+            // 如果目标位置没有障碍物，可以交换位置
+            obj1.transform.position = target2Position;
+            obj2.transform.position = target1Position;
+            return true;
+        }
+        else
+        {
+            Debug.Log("目标位置被阻挡，无法交换位置");
+            return false;
+        }
     }
 }
