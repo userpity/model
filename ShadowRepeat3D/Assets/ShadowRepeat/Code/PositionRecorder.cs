@@ -22,7 +22,7 @@ public class PositionRecorder : MonoBehaviour
     void FixedUpdate()
     {
         // Ö»¼ÇÂ¼Î»ÖÃ
-        if (isRecording && currentFrame < recordedActions.Length)
+        if (isRecording && (currentFrame < recordedActions.Length))
         {
             recordedActions[currentFrame] = new PlayerAction
             {
