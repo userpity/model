@@ -26,7 +26,7 @@ public class BackController : MonoBehaviour
         {
             print("返回游戏");
             //todo: 此处需要在最后被修改
-            SceneManager.LoadSceneAsync("MenuScene");
+            SceneManager.LoadSceneAsync("StartScene");
         });
 
         NoBtn.onClick.AddListener(() =>
