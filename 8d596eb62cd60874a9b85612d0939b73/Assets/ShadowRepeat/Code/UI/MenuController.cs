@@ -27,7 +27,7 @@ public class MenuController : MonoBehaviour
         {
             print("开始游戏");
             //todo: 此处需要在最后被修改
-            SceneManager.LoadSceneAsync("TestScene");
+            SceneManager.LoadSceneAsync("LevelSelectionScene");
         });
 
         //continueBtn.onClick.AddListener(() =>
