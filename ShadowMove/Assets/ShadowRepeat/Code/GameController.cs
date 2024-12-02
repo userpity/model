@@ -16,7 +16,8 @@ public class GameController : MonoBehaviour
     public TextMesh targetTextMesh; // 你想控制的 TextMesh 组件
     public GameObject[] objectsToReset; // 需要重置的物体
     private Vector3[] originalPositions; // 记录物体的起始位置
-
+    public MoveObject[] platformMovements;  // 平台移动组件
+    public PlatformMovementTrigger[] platformMovementTriggers; // 平台移动组件
 
     void Start()
     {
@@ -49,6 +50,8 @@ public class GameController : MonoBehaviour
         {
             if (RecordingMode)
             {
+                ResetObjectsToInitialState();
+                filmCount = 0;
                 // 进入第二条命：回到起点，停止记录，进入播放模式
                 positionReplayer.turnShadow(true);
                 shadowObject.SetActive(true);  // 禁用物体，使其完全不可见且停用
@@ -62,6 +65,7 @@ public class GameController : MonoBehaviour
                 {
                     cubeColorChanger.ChangeColor(Color.blue); // 第一条命是红色
                 }
+                
             }
             else
             {
@@ -137,6 +141,17 @@ public class GameController : MonoBehaviour
             // 确保物体被启用
             objectsToReset[i].SetActive(true);
         }
+
+        foreach (MoveObject platform in platformMovements)
+        {
+            platform.ResetMovement();  // 调用平台组件的重置方法
+        }
+
+        foreach (PlatformMovementTrigger platform in platformMovementTriggers)
+        {
+            platform.ResetMovement();  // 调用平台组件的重置方法
+        }
+
     }
 
     // 检测目标位置是否被障碍物阻挡
