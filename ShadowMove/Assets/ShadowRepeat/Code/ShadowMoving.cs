@@ -38,46 +38,12 @@ public class PositionReplayer : MonoBehaviour
         // 如果正在重放，按帧更新物体位置
         if (isShadow)
         {
-            //if (isReplaying && (positionRecorder.recordedActions[currentFrame] != null) && endReplaying == false)
-            //{
-
-            //    transform.position = positionRecorder.recordedActions[currentFrame].position - startPoint.position + player.position;
-            //    currentFrame++; // 移动到下一帧
-            //}
-
-            //if ((positionRecorder.recordedActions[currentFrame] == null) && currentFrame != 0)
-            //{
-            //    endReplaying = true;
-            //    currentFrame--; // 移动到上一帧
-            //}
-
-            //if (endReplaying == true)
-            //{
-            //    transform.position = positionRecorder.recordedActions[currentFrame].position - startPoint.position + player.position;
-            //}
-
             transform.position = positionRecorder.recordedActions[currentFrame].position - startPoint.position + player.position;
             if (isReplaying && (positionRecorder.recordedActions[currentFrame+1] != null)) currentFrame++;
         }
         if (!isShadow)
         {
-            //if (isReplaying && (positionRecorder.recordedActions[currentFrame] != null) && endReplaying == false)
-            //{
-
-            //    transform.position = -(positionRecorder.recordedActions[currentFrame].position - startPoint.position) + player.position;
-            //    currentFrame++; // 移动到下一帧
-            //}
-
-            //if ((positionRecorder.recordedActions[currentFrame] == null) && currentFrame != 0)
-            //{
-            //    endReplaying = true;
-            //    currentFrame--; // 移动到上一帧
-            //}
-
-            //if (endReplaying == true)
-            //{
-            //    transform.position = -(positionRecorder.recordedActions[currentFrame].position - startPoint.position) + player.position;
-            //}
+            
             transform.position = -(positionRecorder.recordedActions[currentFrame].position - startPoint.position) + player.position;
             if (isReplaying && (positionRecorder.recordedActions[currentFrame + 1] != null))currentFrame++;
         }

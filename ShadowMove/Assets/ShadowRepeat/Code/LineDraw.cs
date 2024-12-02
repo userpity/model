@@ -15,8 +15,8 @@ public class LineDraw : MonoBehaviour
         // 初始化 LineRenderer 组件
         lineRenderer = GetComponent<LineRenderer>();
         lineRenderer.material = new Material(Shader.Find("Sprites/Default")); // 使用默认材质
-        lineRenderer.startColor = Color.white; // 设置起点颜色
-        lineRenderer.endColor = Color.white;   // 设置终点颜色
+        lineRenderer.startColor = Color.black; // 设置起点颜色
+        lineRenderer.endColor = Color.black;   // 设置终点颜色
         lineRenderer.startWidth = 0.1f;        // 设置线宽
         lineRenderer.endWidth = 0.1f;          // 设置线宽
         lineRenderer.positionCount = 0;        // 初始时不显示任何线条
@@ -54,7 +54,7 @@ public class LineDraw : MonoBehaviour
 
                 // 计算当前点的位置
                 lineRenderer.positionCount++;
-            if(i%20<10)lineRenderer.SetPosition(lineRenderer.positionCount-1 , drawPosition);
+                lineRenderer.SetPosition(lineRenderer.positionCount-1 , drawPosition);
         }
         
 

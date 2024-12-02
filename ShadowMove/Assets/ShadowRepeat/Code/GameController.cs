@@ -10,12 +10,24 @@ public class GameController : MonoBehaviour
     public GameObject playerObject;
     private bool RecordingMode = true; // 判断是否为第一条命
     public float checkRadius = 0.5f; // 检测范围，控制检测是否能穿越障碍物
-
-
+    public bool Dead= false;
+    public int keyCount = 0;  // 钥匙数量
+    public int filmCount = 0;  // 胶卷数量
+    public TextMesh targetTextMesh; // 你想控制的 TextMesh 组件
+    public GameObject[] objectsToReset; // 需要重置的物体
+    private Vector3[] originalPositions; // 记录物体的起始位置
 
 
     void Start()
     {
+        originalPositions = new Vector3[objectsToReset.Length];
+
+        for (int i = 0; i < objectsToReset.Length; i++)
+        {
+            originalPositions[i] = objectsToReset[i].transform.position;
+        }
+
+
         // 游戏开始时，玩家回到起点并进入记录模式
         playerObject.transform.position = startPoint != null ? startPoint.position : Vector3.zero;
         positionRecorder.isRecording = true; // 开启记录模式
@@ -29,6 +41,9 @@ public class GameController : MonoBehaviour
 
     void Update()
     {
+        
+            // 设置新的文本内容
+            targetTextMesh.text = "剩余切换次数："+ filmCount;
         // 如果按下 R 键，切换模式
         if (Input.GetKeyDown(KeyCode.R))
         {
@@ -51,6 +66,7 @@ public class GameController : MonoBehaviour
             else
             {
                 // 如果是第二条命，重置回到记录模式，并清空记录
+               ResetObjectsToInitialState(); 
                 RecordingMode = true;
                 positionReplayer.StopReplay(); // 停止播放
                 positionRecorder.recordedActions = new PlayerAction[10000]; // 清空记录
@@ -61,23 +77,67 @@ public class GameController : MonoBehaviour
                 {
                     cubeColorChanger.ChangeColor(Color.red); // 第一条命是红色
                 }
+                filmCount = 0;
                 shadowObject.SetActive(false);  // 禁用物体，使其完全不可见且停用
             }
         }
 
+        if(Dead==true)
+        {
+            // 如果是第二条命，重置回到记录模式，并清空记录
+            ResetObjectsToInitialState();
+            RecordingMode = true;
+            Dead = false;
+            positionReplayer.StopReplay(); // 停止播放
+            positionRecorder.recordedActions = new PlayerAction[10000]; // 清空记录
+            playerObject.transform.position = startPoint != null ? startPoint.position : Vector3.zero;
+            positionRecorder.StartRecording();// 启动记录模式
+            lineDraw.isReplayMode = false;
+            if (cubeColorChanger != null)
+            {
+                cubeColorChanger.ChangeColor(Color.red); // 第一条命是红色
+            }
+            shadowObject.SetActive(false);  // 禁用物体，使其完全不可见且停用
+        }
+
         if (Input.GetMouseButtonDown(0))
         {
-            if (RecordingMode == false) 
+            if (RecordingMode == false&& filmCount > 0) 
             {
                 if (SwapPositionsIfNotBlocked(playerObject, shadowObject))
                 {
                     positionReplayer.turnShadow(); 
                     lineDraw.isShadow = !lineDraw.isShadow;
+                    filmCount--;
                 }
             }
         }
     }
 
+    public void IncreaseKeyCount()
+    {
+        keyCount++;
+        Debug.Log("钥匙数量增加！当前钥匙数量: " + keyCount);
+    }
+
+    // 增加胶卷数量
+    public void IncreaseFilmCount()
+    {
+        filmCount++;
+        Debug.Log("胶卷数量增加！当前胶卷数量: " + filmCount);
+    }
+
+    public void ResetObjectsToInitialState()
+    {
+        for (int i = 0; i < objectsToReset.Length; i++)
+        {
+            // 重置位置
+            objectsToReset[i].transform.position = originalPositions[i];
+
+            // 确保物体被启用
+            objectsToReset[i].SetActive(true);
+        }
+    }
 
     // 检测目标位置是否被障碍物阻挡
     bool IsPositionBlocked(Vector3 targetPosition)
